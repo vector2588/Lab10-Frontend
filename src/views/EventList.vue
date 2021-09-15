@@ -2,9 +2,9 @@
   <h1>Events For Good</h1>
   <div class="events">
     <div class="search-box">
-      <BaseInput 
-        v-model="keyword" 
-        type="text" 
+      <BaseInput
+        v-model="keyword"
+        type="text"
         label="Search..."
         @input="updateKeyword"
       />
@@ -71,7 +71,13 @@ export default {
       })
   },
   beforeRouteUpdate(routeTo) {
-    EventService.getEvents(3, parseInt(routeTo.query.page) || 1)
+    var queryFunction
+    if (this.keyword === '') {
+      queryFunction = EventService.getEvents(3, parseInt(routeTo.query.page) || 1)
+    } else {
+      queryFunction = EventService.getEventByKeyword(this.keyword, 3, parseInt(routeTo.query.page) || 1)
+    }
+    queryFunction
       .then((response) => {
         this.events = response.data // <-----
         this.totalEvents = response.headers['x-total-count'] // <-----
